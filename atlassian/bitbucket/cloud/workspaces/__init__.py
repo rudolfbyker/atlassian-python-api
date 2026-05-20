@@ -10,11 +10,23 @@ from ..repositories import WorkspaceRepositories
 
 
 class Workspaces(BitbucketCloudBase):
+    ROLE_TO_PERMISSION = {"owner": "admin"}
+
     def __init__(self, url, *args, **kwargs):
+        self.user_permissions_url = kwargs.pop("user_permissions_url", None)
         super(Workspaces, self).__init__(url, *args, **kwargs)
 
     def __get_object(self, data):
         return Workspace(data, **self._new_session_args)
+
+    def __get_permission_query(self, role, q):
+        if role is None:
+            return q
+        permission = self.ROLE_TO_PERMISSION.get(role, role)
+        permission_query = f'permission="{permission}"'
+        if q is None:
+            return permission_query
+        return f"({q}) AND {permission_query}"
 
     def each(self, role=None, q=None, sort=None):
         """
@@ -36,17 +48,17 @@ class Workspaces(BitbucketCloudBase):
 
         :return: A generator for the Workspace objects
 
-        API docs: https://developer.atlassian.com/bitbucket/api/2/reference/resource/workspaces#get.
+        API docs:
+        https://developer.atlassian.com/cloud/bitbucket/rest/api-group-workspaces/#api-user-permissions-workspaces-get
         """
         params = {}
-        if role is not None:
-            params["role"] = role
+        q = self.__get_permission_query(role, q)
         if q is not None:
             params["q"] = q
         if sort is not None:
             params["sort"] = sort
-        for workspace in self._get_paged(None, params):
-            yield self.__get_object(workspace)
+        for workspace_permission in self._get_paged(self.user_permissions_url, params, absolute=True):
+            yield self.__get_object(workspace_permission["workspace"])
 
         return
 
