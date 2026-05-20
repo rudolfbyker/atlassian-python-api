@@ -17,8 +17,8 @@ class Cloud(BitbucketCloudBase):
         url = url.strip("/") + f"/{kwargs['api_version']}"
         super(Cloud, self).__init__(url, *args, **kwargs)
         self.__workspaces = Workspaces(
-            f"{self.url}/workspaces",
-            user_permissions_url=f"{self.url}/user/permissions/workspaces",
+            "{}/workspaces".format(self.url),
+            user_permissions_url="{}/user/permissions/workspaces".format(self.url),
             **self._new_session_args,
         )
         self.__repositories = Repositories(f"{self.url}/repositories", **self._new_session_args)

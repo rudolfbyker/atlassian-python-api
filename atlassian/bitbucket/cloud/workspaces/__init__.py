@@ -23,10 +23,10 @@ class Workspaces(BitbucketCloudBase):
         if role is None:
             return q
         permission = self.ROLE_TO_PERMISSION.get(role, role)
-        permission_query = f'permission="{permission}"'
+        permission_query = 'permission="{}"'.format(permission)
         if q is None:
             return permission_query
-        return f"({q}) AND {permission_query}"
+        return "({}) AND {}".format(q, permission_query)
 
     def each(self, role=None, q=None, sort=None):
         """
