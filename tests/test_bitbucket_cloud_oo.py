@@ -34,7 +34,7 @@ class TestBasic:
         assert not CLOUD.workspaces.exists("TestWorkspace1xxx"), "Not exists workspace"
 
     def test_get_workspaces(self):
-        result = [x.name for x in CLOUD.workspaces.each()]
+        result = [workspace.name for workspace in CLOUD.workspaces.each()]
         assert result == ["TestWorkspace1", "TestWorkspace2", "TestWorkspace3"], "Result of workspaces [each()]"
 
     def test_not_exists_project(self):
