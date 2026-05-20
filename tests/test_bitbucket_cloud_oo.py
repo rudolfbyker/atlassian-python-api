@@ -13,8 +13,10 @@ BITBUCKET = None
 try:
     from .mockup import mockup_server
 
-    BITBUCKET = Bitbucket(f"{mockup_server()}/bitbucket/cloud", username="username", password="password", cloud=True)
-    CLOUD = Cloud(f"{mockup_server()}/bitbucket/cloud", username="username", password="password")
+    BITBUCKET = Bitbucket(
+        "{}/bitbucket/cloud".format(mockup_server()), username="username", password="password", cloud=True
+    )
+    CLOUD = Cloud("{}/bitbucket/cloud".format(mockup_server()), username="username", password="password")
 except ImportError:
     pass
 
